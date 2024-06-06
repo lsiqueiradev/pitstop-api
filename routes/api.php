@@ -17,7 +17,8 @@ use App\Http\Controllers\Api\{
 };
 
 //feed
-Route::get('/feed/races/create', [RaceFeedController::class, 'create']);
+Route::get('/feed/races/create', [RaceFeedController::class, 'races']);
+Route::get('/feed/results/create/{offset?}', [RaceFeedController::class, 'results']);
 Route::get('/feed/rankings/teams/create', [RankingFeedController::class, 'getTeams']);
 Route::get('/feed/rankings/drivers/create', [RankingFeedController::class, 'getDrivers']);
 Route::get('/feed/teams/create', [TeamFeedController::class, 'create']);

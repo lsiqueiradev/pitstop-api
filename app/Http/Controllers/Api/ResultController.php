@@ -20,6 +20,23 @@ class ResultController extends Controller
             $qualifying = Race::where('competition', $race->competition)->where('type', '1st Qualifying')->first();
             $sprintQualifying = Race::where('competition', $race->competition)->where('type', '1st Sprint Shootout')->first();
             $sprint = Race::where('competition', $race->competition)->where('type', 'Sprint')->first();
+            $raceResults = $race->results->where('type', 'Race')->first();
+            $firstQualifyingResults =  $race->results->where('type', '1st Qualifying')->first();
+            $secondQualifyingResults = $race->results->where('type', '2nd Qualifying')->first();
+            $thirdQualifyingResults = $race->results->where('type', '3rd Qualifying')->first();
+            $sprinResults = $race->results->where('type', 'Sprint')->first();
+
+
+            $thirdQualifyingResultsLong = null;
+            $secondQualifyingResultsLong = null;
+            if ($thirdQualifyingResults && $secondQualifyingResults && $thirdQualifyingResults) {
+                $firstQualifyingResultsShort = array_slice($firstQualifyingResults['content'], 15, 5);
+                $secondQualifyingResultsShort = array_slice($secondQualifyingResults['content'], 10, 5);
+                $thirdQualifyingResultsLong =  array_merge($thirdQualifyingResults->content, $secondQualifyingResultsShort, $firstQualifyingResultsShort);
+                $secondQualifyingResultsLong =  array_merge($secondQualifyingResults->content, $firstQualifyingResultsShort);
+                // dd($thirdQualifyingResultsLong, $secondQualifyingResultsShort,$firstQualifyingResultsShort,);
+            }
+
 
             $races[$i] = $race->content;
             $races[$i]['firstPracticeDate'] = $firstPractice->date;
@@ -28,11 +45,11 @@ class ResultController extends Controller
             $races[$i]['sprintQualifyingDate'] = $sprint ? $sprintQualifying->date : null;
             $races[$i]['sprintDate'] = $sprint ? $sprint->date : null;
             $races[$i]['qualifyingDate'] = $qualifying->date;
-            $races[$i]['resultsRace'] = $race->results->where('type', 'Race')->first()->content;
-            $races[$i]['resultsFirstQualifying'] = $race->results->where('type', '1st Qualifying')->first()->content;
-            $races[$i]['resultsSecondQualifying'] = $race->results->where('type', '2nd Qualifying')->first()->content;
-            $races[$i]['resultsThirdQualifying'] = $race->results->where('type', '3rd Qualifying')->first()->content;
-            $races[$i]['resultsSprint'] = $race->results->where('type', 'Sprint')->first()->content ?? null;
+            $races[$i]['resultsRace'] = $raceResults ? $raceResults->content : null;
+            $races[$i]['resultsFirstQualifying'] = $firstQualifyingResults ? $firstQualifyingResults->content : null;
+            $races[$i]['resultsSecondQualifying'] = $secondQualifyingResultsLong;
+            $races[$i]['resultsThirdQualifying'] = $thirdQualifyingResultsLong;
+            $races[$i]['resultsSprint'] =  $sprinResults ? $sprinResults->content : null;
         }
 
         return response()->json(array_reverse($races), 200);

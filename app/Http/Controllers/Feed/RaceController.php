@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class RaceController extends Controller
 {
 
-    public function create() {
+    public function races() {
 
         $url = 'https://api-formula-1.p.rapidapi.com/races?season=2024';
 
@@ -57,7 +57,6 @@ class RaceController extends Controller
                 'content' => json_encode($race)
             ]);
         }
-        $this->results();
 
         return response()->json([
             'message' => 'Races and results added successfully'
@@ -65,12 +64,8 @@ class RaceController extends Controller
 
     }
 
-    function results() {
+    public  function results(Int $offset = 0) {
         $url = 'https://api-formula-1.p.rapidapi.com/rankings/races?race=';
-
-        $totalItems = $data = Result::get()->count();
-
-        $page = $totalItems;
 
         $data = Race::whereIn('type', [
             'Race',
@@ -78,9 +73,9 @@ class RaceController extends Controller
             '2nd Qualifying',
             '3rd Qualifying',
             'Sprint'
-        ])->where('date', '<=', Carbon::now())->orderBy('race', 'asc')->offset($page)->limit(10)->get();
+        ])->where('date', '<=', Carbon::now())->orderBy('race', 'asc')->offset($offset)->limit(10)->get();
 
-        if ($page === 0) {
+        if ($offset === 0) {
             Result::truncate();
         }
         foreach ($data as $race) {
