@@ -29,7 +29,7 @@ class ResultController extends Controller
 
             $thirdQualifyingResultsLong = null;
             $secondQualifyingResultsLong = null;
-            if ($thirdQualifyingResults && $secondQualifyingResults && $thirdQualifyingResults) {
+            if ($thirdQualifyingResults && $secondQualifyingResults && $firstQualifyingResults) {
                 $firstQualifyingResultsShort = array_slice($firstQualifyingResults['content'], 15, 5);
                 $secondQualifyingResultsShort = array_slice($secondQualifyingResults['content'], 10, 5);
                 $thirdQualifyingResultsLong =  array_merge($thirdQualifyingResults->content, $secondQualifyingResultsShort, $firstQualifyingResultsShort);
