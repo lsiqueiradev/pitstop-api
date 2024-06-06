@@ -22,7 +22,7 @@ Route::get('/feed/results/create/{offset?}', [RaceFeedController::class, 'result
 Route::get('/feed/rankings/teams/create', [RankingFeedController::class, 'getTeams']);
 Route::get('/feed/rankings/drivers/create', [RankingFeedController::class, 'getDrivers']);
 Route::get('/feed/teams/create', [TeamFeedController::class, 'create']);
-Route::get('/feed/drivers/create', [DriverFeedController::class, 'create']);
+Route::get('/feed/drivers/create/{offset?}', [DriverFeedController::class, 'create']);
 
 
 // api

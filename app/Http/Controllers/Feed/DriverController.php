@@ -9,15 +9,15 @@ use App\Models\RankingDriver;
 class DriverController extends Controller
 {
 
-    public function create() {
+    public function create(Int $offset = 0) {
 
-        $rankingDrivers = RankingDriver::offset(20)->limit(10)->get();
+        $rankingDrivers = RankingDriver::offset($offset)->limit(10)->get();
 
-        // dd($rankingDrivers);
+        if ($offset === 0) {
+            Driver::truncate();
+        }
 
-        // Driver::truncate();
-        foreach($rankingDrivers as $i => $rDriver) {
-            if ($i <= 10 && $i > 20) return;
+        foreach($rankingDrivers as $rDriver) {
             $driverId = $rDriver->content['driver']['id'];
 
             $url = 'https://api-formula-1.p.rapidapi.com/drivers?id=' . $driverId;
@@ -44,12 +44,10 @@ class DriverController extends Controller
 
             $driversJson = json_decode($response);
 
-            // foreach((array) $driversJson->response as $driver) {
             Driver::create([
                 'driver' => $driverId,
                 'content' => json_encode($driversJson->response)
             ]);
-            // }
         }
 
         return response()->json([

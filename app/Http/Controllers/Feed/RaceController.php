@@ -45,7 +45,8 @@ class RaceController extends Controller
             ], 401);
         }
 
-        Race::query()->delete();
+        Result::truncate();
+        Race::truncate();
         foreach((array) $racesJson->response as $race) {
             Race::create([
                 'race' => $race->id,
