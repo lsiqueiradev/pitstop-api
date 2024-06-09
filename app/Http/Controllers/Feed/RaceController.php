@@ -65,8 +65,12 @@ class RaceController extends Controller
 
     }
 
-    public  function results(Int $offset = 0) {
+    public function results(Int $offset = null) {
         $url = 'https://api-formula-1.p.rapidapi.com/rankings/races?race=';
+
+        $count = Result::get()->count();
+
+        $page = $offset ?? $count;
 
         $data = Race::whereIn('type', [
             'Race',
@@ -74,9 +78,9 @@ class RaceController extends Controller
             '2nd Qualifying',
             '3rd Qualifying',
             'Sprint'
-        ])->where('date', '<=', Carbon::now())->orderBy('race', 'asc')->offset($offset)->limit(10)->get();
+        ])->where('date', '<=', Carbon::now())->orderBy('race', 'asc')->offset($page)->limit(10)->get();
 
-        if ($offset === 0) {
+        if ($page === 0) {
             Result::truncate();
         }
         foreach ($data as $race) {
@@ -112,6 +116,8 @@ class RaceController extends Controller
                 'content' => json_encode($resultJson->response)
             ]);
         }
-        return response()->json([], 204);
+        return response()->json([
+            'total' => Result::get()->count()
+        ], 200);
     }
 }
