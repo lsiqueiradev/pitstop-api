@@ -15,7 +15,14 @@ class RaceController extends Controller
         $races = Race::whereIn('type', [
             'Race',
             'Sprint'
-        ])->where('date', '>=', Carbon::now()->subDays(3))->where('date', '<=', Carbon::now()->addDays(3))->orderBy('date', 'asc')->limit(2)->get();
+        ])
+        ->where('date', '>=', Carbon::now()
+        ->subDays(3))
+        ->where('date', '<=', Carbon::now()
+        ->addDays(3))
+        ->orderBy('date', 'asc')
+        ->limit(2)
+        ->get();
 
         foreach($races as $race) {
             $url = 'https://api-formula-1.p.rapidapi.com/races?id='.$race->race;
@@ -173,6 +180,7 @@ class RaceController extends Controller
             ]);
         }
         return response()->json([
+            'results' => 'Results added successfully',
             'total' => Result::get()->count()
         ], 200);
     }

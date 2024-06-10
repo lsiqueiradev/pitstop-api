@@ -9,9 +9,20 @@ use App\Models\RankingDriver;
 class DriverController extends Controller
 {
 
-    public function create(Int $offset = 0) {
+    public function create(Int $offset = null) {
 
-        $rankingDrivers = RankingDriver::offset($offset)->limit(10)->get();
+        $rankingCount = RankingDriver::get()->count();
+        $driversCount = Driver::get()->count();
+
+        if ($rankingCount === $driversCount) {
+            return response()->json([
+                'message' => 'Dados atualizados'
+            ], 201);
+        }
+
+        $page = $offset ?? $driversCount;
+
+        $rankingDrivers = RankingDriver::offset($page)->limit(10)->get();
 
         if ($offset === 0) {
             Driver::truncate();
@@ -51,7 +62,8 @@ class DriverController extends Controller
         }
 
         return response()->json([
-            'message' => 'Drivers added successfully'
+            'message' => 'Drivers added successfully',
+            'total' => Driver::get()->count()
         ], 201);
     }
 }
