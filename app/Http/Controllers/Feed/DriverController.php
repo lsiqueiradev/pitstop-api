@@ -21,7 +21,7 @@ class DriverController extends Controller
         $rankingCount = RankingDriver::get()->count();
         $driversCount = Driver::get()->count();
 
-        if ($rankingCount === $driversCount) {
+        if ($rankingCount === $driversCount && $offset === null) {
             return response()->json([
                 'message' => 'Dados atualizados'
             ], 201);
