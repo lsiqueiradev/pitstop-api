@@ -11,6 +11,13 @@ class DriverController extends Controller
 
     public function create(Int $offset = null) {
 
+        $abbr = array(
+            83 => 'ZHO',
+            92 => 'SAR',
+            97 => 'PIA',
+            101 => 'BEA',
+        );
+
         $rankingCount = RankingDriver::get()->count();
         $driversCount = Driver::get()->count();
 
@@ -54,6 +61,8 @@ class DriverController extends Controller
             }
 
             $driversJson = json_decode($response);
+
+            $driversJson->response[0]->abbr = $driversJson->response[0]->abbr ?? $abbr[$driversJson->response[0]->id];
 
             Driver::create([
                 'driver' => $driverId,
